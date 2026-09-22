@@ -1,0 +1,19 @@
+{
+  "name": "fitgym",
+  "version": "1.0.0",
+  "description": "FitGym - Full-stack gym website",
+  "main": "app.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env app.js",
+    "dev": "node --env-file-if-exists=.env --watch app.js",
+    "seed": "node --env-file-if-exists=.env seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "express": "^4.19.2"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitGym</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💪%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#/" class="brand">💪 Fit<span>Gym</span></a>
+      <nav class="nav" id="navbar">
+        <a href="#/" class="nav-link" data-route="home">Home</a>
+        <a href="#/plans" class="nav-link" data-route="plans">Plans</a>
+        <a href="#/workout" class="nav-link" data-route="workout">AI Workout</a>
+        <a href="#/dashboard" class="nav-link" data-route="dashboard">Dashboard</a>
+        <a href="#/register" class="btn btn-primary btn-sm">Join Now</a>
+      </nav>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+    </div>
+  </header>
+
+  <main id="view"></main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="brand">💪 Fit<span>Gym</span></span>
+      <p>Train hard. Stay strong. © <span id="year"></span> FitGym</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
