@@ -19,10 +19,19 @@ npm run seed      # seeds facilities, trainers, memberships + demo member
 npm start         # http://localhost:3000
 ```
 
-> Server needs Node.js 22.9+ (uses `--env-file-if-exists`).
+> The app auto-seeds base data on boot, so a fresh run works without `npm run seed`.
 
 ### Demo login / lookup
 Open the **Dashboard** and enter member ID `1` to view the seeded demo member.
+
+## Deploy on Render
+
+1. Push this repo to GitHub.
+2. In [Render](https://render.com): **New → Blueprint**, and select the repo.
+3. Render reads `render.yaml` and creates the `fitgym` web service automatically.
+4. Optional: set `AI_API_KEY` in the service's **Environment** tab to enable AI-generated workouts (otherwise it uses built-in templates).
+
+Note: SQLite lives on the server's filesystem. On Render's free tier the disk is ephemeral, so registrations may reset on restart/deploy — base content (plans, facilities, trainers, demo member) is re-seeded automatically.
 
 ## Project Structure
 

@@ -1,10 +1,16 @@
+require('dotenv').config({ quiet: true });
+
 const express = require('express');
 const path = require('path');
 
 const apiRoutes = require('./routes/api');
+const { initData } = require('./seed');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Self-healing: ensure base data exists on every boot (idempotent)
+initData();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
