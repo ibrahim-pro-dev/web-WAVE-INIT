@@ -577,6 +577,26 @@ h1, h2, h3, .brand, .display {
 .plans-grid .plan-card.reveal:nth-child(2) { transition-delay: 0.08s; }
 .plans-grid .plan-card.reveal:nth-child(3) { transition-delay: 0.16s; }
 
+/* ---------- 3D tilt ---------- */
+[data-tilt] {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+[data-tilt]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.11), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+[data-tilt]:hover::after { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
   .reveal { opacity: 1; transform: none; }

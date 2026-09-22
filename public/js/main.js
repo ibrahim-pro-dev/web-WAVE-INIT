@@ -66,7 +66,7 @@ const memberStore = {
 
 function membershipCards(plans) {
   return plans.map((p) => `
-    <div class="plan-card reveal ${p.price >= 2400 ? 'popular' : ''}">
+    <div class="plan-card reveal ${p.price >= 2400 ? 'popular' : ''}" ${p.price >= 2400 ? '' : 'data-tilt'}>
       ${p.price >= 2400 ? '<span class="plan-badge">Best Value</span>' : ''}
       <span class="plan-name">${e(p.name)}</span>
       <div class="plan-price">₹${Number(p.price).toLocaleString('en-IN')}<span> / month</span></div>
@@ -108,7 +108,7 @@ async function home() {
         </div>
         <div class="grid grid-4">
           ${FACILITIES.map((f) => `
-            <div class="card reveal">
+            <div class="card reveal" data-tilt>
               <div class="card-icon">${f.icon}</div>
               <h3>${e(f.name)}</h3>
               <p>${e(f.description)}</p>
@@ -126,7 +126,7 @@ async function home() {
         </div>
         <div class="grid grid-3">
           ${TRAINERS.map((t) => `
-            <div class="card trainer-card reveal">
+            <div class="card trainer-card reveal" data-tilt>
               <img src="${t.photo}" alt="${e(t.name)}" />
               <h3>${e(t.name)}</h3>
               <p class="specialty">${e(t.specialty)}</p>
@@ -328,27 +328,27 @@ async function renderMember(id) {
 
   box.innerHTML = `
     <div class="dash-grid">
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Member Name</div>
         <div class="stat-value">${e(m.name)}</div>
       </div>
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Selected Plan</div>
         <div class="stat-value">${e(plan.name || m.membershipPlan)}${plan.price ? ` <span style="font-size:1rem;color:var(--accent-2);">₹${Number(plan.price).toLocaleString('en-IN')}/mo</span>` : ''}</div>
       </div>
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Membership Status</div>
         <div style="margin-top:8px;">${statusBadge(m.membershipStatus)}</div>
       </div>
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Expiry Date</div>
         <div class="stat-value">${formatDate(m.expiryDate)}</div>
       </div>
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Days Remaining</div>
         <div class="stat-value">${daysLeft(m.expiryDate)} days</div>
       </div>
-      <div class="stat-card reveal">
+      <div class="stat-card reveal" data-tilt>
         <div class="stat-label">Email</div>
         <div class="stat-value" style="font-size:1rem;font-weight:500;">${e(m.email)}</div>
       </div>
@@ -495,24 +495,47 @@ async function navigate() {
 
 function initReveal() {
   const els = document.querySelectorAll('.reveal:not(.reveal-ready)');
-  if (!els.length) return;
-  els.forEach((el) => el.classList.add('reveal-ready'));
-
   if (typeof IntersectionObserver === 'undefined') {
-    els.forEach((el) => el.classList.add('reveal-visible'));
-    return;
+    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('reveal-visible'));
+  } else if (els.length) {
+    els.forEach((el) => el.classList.add('reveal-ready'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach((el) => io.observe(el));
   }
+  initTilt();
+}
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal-visible');
-        io.unobserve(entry.target);
-      }
+function initTilt() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.PointerEvent) return;
+
+  document.querySelectorAll('[data-tilt]').forEach((el) => {
+    if (el.dataset.tiltInit) return;
+    el.dataset.tiltInit = '1';
+
+    el.addEventListener('pointermove', (ev) => {
+      if (ev.pointerType !== 'mouse') return;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const px = (ev.clientX - r.left) / r.width - 0.5;
+      const py = (ev.clientY - r.top) / r.height - 0.5;
+      el.style.setProperty('--mx', `${(px + 0.5) * 100}%`);
+      el.style.setProperty('--my', `${(py + 0.5) * 100}%`);
+      el.style.transform =
+        `perspective(900px) rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 7).toFixed(2)}deg) translateY(-4px)`;
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-  els.forEach((el) => io.observe(el));
+    el.addEventListener('pointerleave', () => {
+      el.style.transform = '';
+    });
+  });
 }
 
 window.addEventListener('hashchange', navigate);
